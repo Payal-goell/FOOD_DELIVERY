@@ -8,8 +8,8 @@ const StoreContextProvider = (props) => {
 
     const [cartItems, setCartItems] = useState({});
     const [token,setToken] = useState("");
-    // const url = "http://localhost:4000";
-    const url = "https://food-delivery-backend-tecv.onrender.com";
+    const url = "http://localhost:4000";
+    // const url = "https://food-delivery-backend-tecv.onrender.com";
 
     const [food_list, setFoodList] = useState([]);
 
@@ -38,7 +38,7 @@ const StoreContextProvider = (props) => {
         for(const item in cartItems){
             if(cartItems[item]>0){
                 let itemInfo = food_list.find((product) => product._id === item);
-                totalAmount += itemInfo?.price * cartItems[item];
+                totalAmount += (itemInfo?.price || 0) * cartItems[item];
             }
         }
         return totalAmount;
@@ -50,12 +50,12 @@ const StoreContextProvider = (props) => {
 
     const fetchFoodList = async () => {
         const response = await axios.get(url+'/api/food/list');
-        setFoodList(response.data.data)
+        setFoodList(response.data.data || [])
     }
 
     const loadCartData = async (token) => {
         const response = await axios.post(url + "/api/cart/get", {}, {headers:{token}})
-        setCartItems(response.data.cartData)
+        setCartItems(response.data.cartData || {})
     }
 
     useEffect(()=>{
